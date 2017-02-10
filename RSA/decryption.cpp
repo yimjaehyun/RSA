@@ -5,6 +5,7 @@
 #include <string>
 #include <stdio.h>
 #include <ctype.h>
+
 using namespace std;
 int main() {
 	bool run = true;
@@ -21,24 +22,43 @@ int main() {
 	cin >> choice;
 	if (choice == 1)
 	{
+		//sample n = 85, e = 11, d = 35
+		int m, n, e;
 		string message;
 		cout << "enter message: ";
-		cin >> message;
-
+		cin.ignore();
+		getline(cin, message);
+		cout << "enter n: ";
+		cin >> n;
+		cout << "enter e: ";
+		cin >> e;
 		ofstream file;
 		file.open("message.txt");
-
+		if (!file.is_open())
+			cout << "Unable to open file";
 		for (unsigned i = 0; i < message.size(); i++)
 		{
 			for (unsigned j = 0; j < sizeof(code); j++)
 			{
 				char letter = message[i];
-				if (letter == code[j])
+				if (letter == code[j] || letter == code2[j])
 				{
-					file << j + 2 << " ";
+					//C = M^e mod n
+					m = j + 2;
+					int temp = m;
+					for (unsigned i = 0; i < e-1; i++)
+					{
+						m *= temp;
+						m = m % n;
+					}
+					if (i + 1 == message.size())
+						file << m;
+					else
+						file << m << " ";
 				}
 			}
 		}
+		file.close();
 	}
 	else if (choice == 2)
 	{
@@ -46,7 +66,7 @@ int main() {
 		int output;
 		int answer, answer2;
 
-
+		//M=c^d mod n
 		cout << "Decryption key = ";
 		cin >> dKey;
 		cout << endl;
@@ -67,7 +87,6 @@ int main() {
 			if (answer < 2)
 				return 1;
 			cout << code[answer - 2];
-
 		}
 		file.close();
 	}
